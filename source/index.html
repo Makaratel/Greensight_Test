@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Greensight_Test Delivery</title>
+    <link rel="stylesheet" type="text/css" href="css/style-min.css">
+    <link rel="preload" href="/fonts/Montserrat-Medium.ttf" as="font">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+  </head>
+  <body>
+    <div class="delivery container">
+      <h2 class="delivery__title">Выберите способ доставки</h2>
+      <ul class="delivery__list">
+        <li class="delivery__item">
+          <div class="delivery__wrapper">
+            <h3>Доставка</h3>
+          </div>
+
+          <div class="delivery__wrapper">
+            <form class="delivery__form user-info" action="#" method="post">
+              <fieldset class="user-info__fieldset">
+                <label for="name">ФИО</label>
+                <input type="text" id="name" placeholder="Только кириллица">
+              </fieldset>
+
+              <fieldset class="user-info__fieldset">
+                <label for="phone">Телефон</label>
+                <input type="number" id="phone" placeholder="+7 (___) ___-__-__">
+              </fieldset>
+
+              <fieldset class="user-info__fieldset">
+                <label for="address">Адрес доставки</label>
+                <input type="text" id="address" placeholder="Город, улица, дом">
+              </fieldset>
+
+              <fieldset class="user-info__fieldset">
+                <label for="comment">Комментарий</label>
+                <textarea name="comment" id="comment"></textarea>
+              </fieldset>
+              <button class="delivery__button">Отправить</button>
+            </form>
+          </div>
+        </li>
+
+        <li class="delivery__item">
+          <div class="delivery__wrapper">
+            <h3>Самовывоз</h3>
+          </div>
+
+          <div class="delivery__wrapper">
+            <form class="delivery__form delivery-address" action="#" method="get">
+              <ul class="delivery-address__list">
+                <li class="delivery-address__item">
+                  <input type="radio" id="punkt1">
+                  <label for="punkt1">Пункт Выдачи заказов Песчаная улица, дом 13</label>
+                </li>
+
+                <li class="delivery-address__item">
+                  <input type="radio" id="punkt2">
+                  <label for="punkt2">Пункт Выдачи заказов Подсосенский переулок, 11</label>
+                </li>
+              </ul>
+
+              <iframe class="delivery-address__map" src="" frameborder="0"></iframe>
+              <button class="delivery__button">Отправить</button>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>
