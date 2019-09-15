@@ -1,38 +1,44 @@
-var menuButton = document.querySelector(".menu-button");
-var menuLists = document.querySelectorAll(".main-nav__list");
-var modal = document.querySelector(".modal-size");
-var modalOpenIndex = document.querySelector(".popular-good__button");
-var modalOpenCatalog = document.querySelectorAll(".goods-description__button");
-var modalClose = document.querySelector(".modal-size__button");
-var isMenuOpen = true;
-
-var openModal = function(element){
-  element.addEventListener("click", function(evt){
-    evt.preventDefault();
-    modal.classList.add("modal-size--open");
-  })
-}
+var deliveryOfficeTitle = document.querySelector('.title-wrapper--office');
+var deliverySelfTitle = document.querySelector('.title-wrapper--self');
+var deliveryOffice = document.querySelector('.user-info__wrapper');
+var deliverySelf = document.querySelector('.delivery-address__wrapper');
+var userInfoForm = document.querySelector('.user-info');
+var inputName = userInfoForm.querySelector('#name');
+var inputPhone = userInfoForm.querySelector('#phone');
+var isOpenOffice = true;
+var isOpenSelf = false;
 
 var mapInit = function() {
   ymaps.ready(function () {
     var myMap = new ymaps.Map("map", {
-      center: [59.938631, 30.323000],
-      zoom: 17,
+      center: [55.82, 37.57],
+      zoom: 10,
       controls: []
     },
     {
       searchControlProvider: 'yandex#search'
     }),
-    myPlacemark = new ymaps.Placemark([59.938631, 30.323055], {
-      hintContent: "Mishka",
-      balloonContent: "191186, Санкт-Петербург,<br>ул. Б.Конюшенная, д. 19/8"
+
+    myPlacemark_1 = new ymaps.Placemark([55.801131, 37.508167], {
+      hintContent: "Песчаная улица, дом 13",
     },
     {
       iconLayout: "default#image",
-      iconImageHref: "img/map-pin.svg",
-      iconImageSize: [124, 106],
+      iconImageHref: "img/pin.png",
+      iconImageSize: [32, 44],
       iconImageOffset: [-62, -106]
     });
+
+    myPlacemark_2 = new ymaps.Placemark([55.757556, 37.651592], {
+      hintContent: "Подсосенский переулок, 11",
+    },
+    {
+      iconLayout: "default#image",
+      iconImageHref: "img/pin.png",
+      iconImageSize: [32, 44],
+      iconImageOffset: [-22, -56]
+    });
+
     myMap.behaviors.disable("scrollZoom");
     myMap.controls.add("zoomControl", {
       position: {
@@ -40,48 +46,86 @@ var mapInit = function() {
         left: 15
       }
     });
-    myMap.geoObjects.add(myPlacemark);
+
+    myMap.geoObjects.add(myPlacemark_1);
+    myMap.geoObjects.add(myPlacemark_2);
   });
 };
 
-for (var i = 0; i < menuLists.length; i++) {
-  menuButton.classList.remove("menu-button--open");
-  menuLists[i].classList.remove("main-nav__list--open");
-  menuButton.classList.add("menu-button--close");
-  menuLists[i].classList.add("main-nav__list--close");
-  isMenuOpen = false;
-}
+var changeStateTwoTabs = function (manageTabOne, manageTabTwo, drivenTabOne, drivenTabTwo) {
+  manageTabOne.classList.remove('title-wrapper--open');
+  drivenTabOne.classList.remove('wrapper-open');
+  manageTabOne.classList.add('title-wrapper--close');
+  drivenTabOne.classList.add('wrapper-close');
 
-menuButton.addEventListener("click", function(){
-  if (!isMenuOpen) {
-    for (var i = 0; i < menuLists.length; i++) {
-      menuButton.classList.remove("menu-button--close");
-      menuLists[i].classList.remove("main-nav__list--close");
-      menuButton.classList.add("menu-button--open");
-      menuLists[i].classList.add("main-nav__list--open");
-    }
-    isMenuOpen = true;
+  manageTabTwo.classList.remove('title-wrapper--close');
+  drivenTabTwo.classList.remove('wrapper-close');
+  manageTabTwo.classList.add('title-wrapper--open');
+  drivenTabTwo.classList.add('wrapper-open');
+};
+
+var validateName = function () {
+  var reg = /^[а-яА-Я\ -]+$/;
+  var valid = reg.test(inputName.value);
+  if (!valid) {
+    inputName.setCustomValidity('Поле не должно содердать латинских букв и цифр!')
+  } else {
+    inputName.setCustomValidity('');
+  }
+};
+
+var validatePhone = function () {
+  if (inputPhone.value.length < 18) {
+    inputPhone.setCustomValidity('Номер телефона введен неправильно!')
+  } else {
+    inputPhone.setCustomValidity('');
+  }
+};
+
+var maskPhone = function (event) {
+  var keyCode = event.keyCode;
+  var matrix = "+7 (___) ___-__-__";
+  var i = 0;
+  var def = matrix.replace(/\D/g, "");
+  var val = this.value.replace(/\D/g, "");
+  var new_value = matrix.replace(/[_\d]/g, function(a) {
+    return i < val.length ? val.charAt(i++) || def.charAt(i) : a
+  });
+
+  i = new_value.indexOf("_");
+  if (i != -1) {
+      i < 5 && (i = 3);
+      new_value = new_value.slice(0, i)
   }
 
-  else if (isMenuOpen) {
-    for (var i = 0; i < menuLists.length; i++) {
-      menuButton.classList.remove("menu-button--open");
-      menuLists[i].classList.remove("main-nav__list--open");
-      menuButton.classList.add("menu-button--close");
-      menuLists[i].classList.add("main-nav__list--close");
-    }
-    isMenuOpen = false;
-  }
-})
+  var reg = matrix.substr(0, this.value.length).replace(/_+/g,
+      function(a) {
+          return "\\d{1," + a.length + "}"
+      }).replace(/[+()]/g, "\\$&");
+  reg = new RegExp("^" + reg + "$");
 
-for (var i = 0; i < modalOpenCatalog.length; i++) {
-  openModal(modalOpenCatalog[i]);
-}
-
-openModal(modalOpenIndex);
-
-modalClose.addEventListener("click", function(){
-  modal.classList.remove("modal-size--open");
-})
+  if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) this.value = new_value;
+  if (event.type == "blur" && this.value.length < 5)  this.value = "";
+};
 
 mapInit();
+
+deliveryOfficeTitle.addEventListener('click', function () {
+  if (!isOpenOffice) {
+    changeStateTwoTabs(deliverySelfTitle, deliveryOfficeTitle, deliverySelf, deliveryOffice);
+    isOpenSelf = false;
+    isOpenOffice = true;
+  }
+});
+
+deliverySelfTitle.addEventListener('click', function () {
+  if (!isOpenSelf) {
+    changeStateTwoTabs(deliveryOfficeTitle, deliverySelfTitle, deliveryOffice, deliverySelf);
+    isOpenOffice = false;
+    isOpenSelf = true;
+  }
+});
+
+inputName.addEventListener('blur', validateName);
+inputPhone.addEventListener('input', maskPhone);
+inputPhone.addEventListener('blur', validatePhone);
